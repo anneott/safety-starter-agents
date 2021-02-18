@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-import gym 
+import argparse
+import gym
 import safety_gym
 import safe_rl
 from safe_rl.utils.run_utils import setup_logger_kwargs
@@ -7,7 +8,6 @@ from safe_rl.utils.mpi_tools import mpi_fork
 
 
 def main(robot, task, algo, seed, exp_name, cpu):
-
     # Verify experiment
     robot_list = ['point', 'car', 'doggo']
     task_list = ['goal1', 'goal2', 'button1', 'button2', 'push1', 'push2']
@@ -20,15 +20,18 @@ def main(robot, task, algo, seed, exp_name, cpu):
     assert task.lower() in task_list, "Invalid task"
     assert robot.lower() in robot_list, "Invalid robot"
 
+
     # Hyperparameters
     exp_name = algo + '_' + robot + task
-    if robot=='Doggo':
+    if robot == 'Doggo':
         num_steps = 1e8
         steps_per_epoch = 60000
     else:
-        num_steps = 1e7
-        steps_per_epoch = 30000
+        num_steps = 10000000 #5000000 25-32h #1e6 #1e7 10 000 000 vs 1 500 000 => 50epochs; 3 000 000 => 100 epochs;  6 000 000 => 200 epochs
+        steps_per_epoch = 100000#30000
     epochs = int(num_steps / steps_per_epoch)
+
+    print('\n\nNum steps', num_steps, ', epochs', epochs, ', steps per epoch', steps_per_epoch,'\n')
     save_freq = 50
     target_kl = 0.01
     cost_lim = 25
@@ -68,6 +71,7 @@ if __name__ == '__main__':
     parser.add_argument('--seed', type=int, default=0)
     parser.add_argument('--exp_name', type=str, default='')
     parser.add_argument('--cpu', type=int, default=1)
+    # parser.add_argument('--epochs', type=int, default=500)
     args = parser.parse_args()
     exp_name = args.exp_name if not(args.exp_name=='') else None
     main(args.robot, args.task, args.algo, args.seed, exp_name, args.cpu)
