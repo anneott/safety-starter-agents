@@ -27,9 +27,12 @@ def main(robot, task, algo, seed, exp_name, cpu):
         num_steps = 1e8
         steps_per_epoch = 60000
     else:
-        num_steps = 10000000 #5000000 25-32h #1e6 #1e7 10 000 000 vs 1 500 000 => 50epochs; 3 000 000 => 100 epochs;  6 000 000 => 200 epochs
-        steps_per_epoch = 100000#30000
+        num_steps = 6000000 #10000000#5000000 #1e6 #1e7 10 000 000 vs 1 500 000 => 50epochs; 3 000 000 => 100 epochs;  6 000 000 => 200 epochs
+        steps_per_epoch = 100000 #100000#30000
     epochs = int(num_steps / steps_per_epoch)
+
+    # original
+    #num_steps 1e7 = 10 000 000 steps_per_epoch=30 000
 
     print('\n\nNum steps', num_steps, ', epochs', epochs, ', steps per epoch', steps_per_epoch,'\n')
     save_freq = 50
@@ -57,7 +60,8 @@ def main(robot, task, algo, seed, exp_name, cpu):
          target_kl=target_kl,
          cost_lim=cost_lim,
          seed=seed,
-         logger_kwargs=logger_kwargs
+         logger_kwargs=logger_kwargs,
+         #penalty_lr=100000
          )
 
 
